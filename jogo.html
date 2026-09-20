@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jogo — Jogo da Memória de Animes</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,800;0,900;1,900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/jogo.css">
+</head>
+<body>
+
+  <main class="tela tela--jogo">
+    <h1 class="sr-only">Jogo da Memória de Animes</h1>
+
+    <header class="topo">
+      <button class="botao botao--branco botao-pausa" type="button"
+              popovertarget="menu-pausa" aria-label="Pausar o jogo">
+        <img class="botao-pausa__icone" src="assets/img/icone-pausa.svg" alt="">
+      </button>
+
+      <div class="placar" role="group" aria-label="Placar">
+        <div class="placar__jogadores">
+          <div class="placar__jogador placar__jogador--1">
+            <span class="placar__pontos" id="pontos-jogador-1">0</span>
+            <span class="placar__erros">Erros restantes: <span id="erros-jogador-1">0</span></span>
+          </div>
+
+          <svg class="placar__x so-2-jogadores" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 4 L20 20 M20 4 L4 20" stroke="#e60000" stroke-width="5" stroke-linecap="round" fill="none"/>
+          </svg>
+
+          <div class="placar__jogador placar__jogador--2 so-2-jogadores">
+            <span class="placar__pontos" id="pontos-jogador-2">0</span>
+            <span class="placar__erros">Erros restantes: <span id="erros-jogador-2">0</span></span>
+          </div>
+        </div>
+
+        <p class="placar__tempo">Tempo: <span id="tempo">20</span> Segundos</p>
+      </div>
+    </header>
+
+    <div class="mesa">
+      <!-- 8 colunas x 4 linhas = 32 cartas (em telas em pé, 4 x 8).
+           O JS define a imagem de cada uma com: carta.style.setProperty("--imagem", 'url(...)') -->
+      <section class="tabuleiro" id="tabuleiro" aria-label="Tabuleiro de cartas">
+        <button class="carta" type="button" data-carta="1" aria-label="Carta 1">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="2" aria-label="Carta 2">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="3" aria-label="Carta 3">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="4" aria-label="Carta 4">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="5" aria-label="Carta 5">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="6" aria-label="Carta 6">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="7" aria-label="Carta 7">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="8" aria-label="Carta 8">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="9" aria-label="Carta 9">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="10" aria-label="Carta 10">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="11" aria-label="Carta 11">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="12" aria-label="Carta 12">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="13" aria-label="Carta 13">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="14" aria-label="Carta 14">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="15" aria-label="Carta 15">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="16" aria-label="Carta 16">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="17" aria-label="Carta 17">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="18" aria-label="Carta 18">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="19" aria-label="Carta 19">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="20" aria-label="Carta 20">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="21" aria-label="Carta 21">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="22" aria-label="Carta 22">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="23" aria-label="Carta 23">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="24" aria-label="Carta 24">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="25" aria-label="Carta 25">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="26" aria-label="Carta 26">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="27" aria-label="Carta 27">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="28" aria-label="Carta 28">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="29" aria-label="Carta 29">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="30" aria-label="Carta 30">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="31" aria-label="Carta 31">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+        <button class="carta" type="button" data-carta="32" aria-label="Carta 32">
+          <span class="carta__interno">
+            <span class="carta__face carta__verso"></span>
+            <span class="carta__face carta__frente"></span>
+          </span>
+        </button>
+      </section>
+    </div>
+
+    <!-- Menu de pausa: abre e fecha sozinho (popover nativo), sem JS.
+         Para pausar o tempo no seu JS, escute o evento "toggle":
+         menu.addEventListener("toggle", (e) => e.newState === "open" ? pausar() : continuar()) -->
+    <div class="painel menu-pausa" id="menu-pausa" popover aria-labelledby="titulo-pausa">
+      <h2 class="menu-pausa__titulo" id="titulo-pausa">Jogo pausado</h2>
+
+      <button class="botao botao--verde" type="button"
+              popovertarget="menu-pausa" popovertargetaction="hide">Continuar</button>
+      <!-- href vazio recarrega a página atual: recomeça a partida mantendo as opções da URL -->
+      <a class="botao botao--branco" href="">Reiniciar</a>
+      <a class="botao botao--branco" href="jogadores.html">Mudar opções</a>
+      <a class="botao botao--vermelho botao--texto-claro" href="index.html">Sair</a>
+    </div>
+  </main>
+
+  <script src="js/opcoes.js" defer></script>
+  <!-- <script src="js/jogo.js" defer></script> -->
+</body>
+</html>
