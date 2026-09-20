@@ -1,0 +1,51 @@
+/* ==========================================================
+   jogadores.css — Tela 2: escolha de 1 ou 2 jogadores
+   ========================================================== */
+
+.tela--jogadores {
+  display: grid;
+  place-items: center;
+  padding: 4vh 4vw;
+}
+
+.modos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  gap: 2rem;
+  width: var(--largura-painel);
+  padding: clamp(1.5rem, 4vh, 3.5rem) clamp(1rem, 3vw, 3rem);
+}
+
+/* Cada opção = ícone + botão (o conjunto todo é clicável) */
+.modo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  font-size: var(--fonte-ui); /* o ícone acompanha o tamanho do botão */
+  border-radius: 1rem;
+}
+
+/* Os dois ícones têm a mesma altura; o de 2 jogadores só é mais largo */
+.modo__icone {
+  height: 5em;
+  width: auto;
+}
+
+.modo:hover .botao,
+.modo:focus-visible .botao {
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.modo:focus-visible {
+  outline: none;
+}
+
+.modo:focus-visible .botao {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
