@@ -1,0 +1,291 @@
+/* ==========================================================
+   jogo.css — Tela 4: topo (pausa + placar), mesa de cartas e menu
+
+   Classes de estado que o JavaScript pode ligar/desligar:
+
+   .carta--virada      carta virada (mostra a imagem)
+   .carta--removida    par encontrado: a carta some, mas continua
+                       ocupando o lugar no grid
+   .tabuleiro--travado bloqueia cliques (ex.: enquanto compara
+                       duas cartas viradas)
+
+   Variáveis CSS que o JavaScript pode alterar no #tabuleiro:
+
+   --colunas / --linhas   tamanho do grid (o CSS já ajusta o
+                          tamanho das cartas para caber na tela)
+   --imagem (em cada .carta)   ex.: url("assets/img/naruto.jpg")
+
+   Modo de jogo (definido por js/opcoes.js):
+
+   <html data-jogadores="1">  esconde o jogador 2 e o "X" do placar
+   <html data-jogadores="2">  mostra os dois jogadores
+   ========================================================== */
+
+.tela--jogo {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 2.5vh, 2rem);
+  height: 100vh;
+  height: 100dvh; /* a tela nunca passa da janela: o tabuleiro se encaixa */
+  padding: clamp(0.75rem, 3vh, 2.5rem) clamp(0.75rem, 3vw, 3rem);
+  background-image:
+    url("../assets/img/fundo-jogo.jpg"),
+    radial-gradient(circle at 50% 20%, #7a1c24 0%, #3b0d18 45%, #12040a 100%);
+}
+
+/* ---------- Topo: botão de pausa + placar ---------- */
+.topo {
+  --largura-pausa: clamp(2.5rem, 4vw, 4rem);
+
+  display: grid;
+  grid-template-columns: var(--largura-pausa) 1fr var(--largura-pausa);
+  align-items: center;
+  gap: 1rem;
+}
+
+.botao-pausa {
+  width: var(--largura-pausa);
+  aspect-ratio: 1;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.botao-pausa__icone {
+  width: 45%;
+}
+
+/* ---------- Placar ---------- */
+.placar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  justify-self: center;
+  width: min(100%, max(60vw, 36rem));
+  padding: 0.3em 1em;
+  font-size: calc(var(--fonte-ui) * 0.9);
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 0.6em;
+}
+
+.placar__jogadores {
+  display: flex;
+  align-items: center;
+  gap: 1.2em;
+}
+
+.placar__jogador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+}
+
+.placar__jogador--1 { color: var(--cor-jogador-1); }
+.placar__jogador--2 { color: var(--cor-jogador-2); }
+
+.placar__pontos {
+  min-width: 0.7em;
+  font-weight: 500;
+  text-align: center;
+}
+
+.placar__erros {
+  font-size: 0.7em;
+  white-space: nowrap;
+}
+
+.placar__x {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.placar__tempo {
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Com 1 jogador, some tudo que é do jogador 2 */
+[data-jogadores="1"] .so-2-jogadores {
+  display: none;
+}
+
+/* ---------- Mesa: ocupa o espaço que sobra e mede o tabuleiro ---------- */
+.mesa {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  container-type: size; /* habilita as unidades cqw / cqh usadas abaixo */
+}
+
+/* ---------- Tabuleiro ---------- */
+.tabuleiro {
+  --colunas: 8;
+  --linhas: 4;
+  --espaco: 0.18; /* espaço entre cartas, como fração do tamanho da carta */
+
+  /* Maior carta que ainda cabe na mesa, na largura e na altura */
+  --carta: min(
+    calc(100cqw / (var(--colunas) + (var(--colunas) - 1) * var(--espaco))),
+    calc(100cqh / (var(--linhas) + (var(--linhas) - 1) * var(--espaco))),
+    14rem
+  );
+
+  display: grid;
+  grid-template-columns: repeat(var(--colunas), var(--carta));
+  gap: calc(var(--carta) * var(--espaco));
+}
+
+.tabuleiro--travado {
+  pointer-events: none;
+}
+
+/* Telas em pé (celular e iPad): 4 colunas x 8 linhas aproveitam melhor a altura */
+@media (orientation: portrait) {
+  .tabuleiro {
+    --colunas: 4;
+    --linhas: 8;
+  }
+}
+
+/* Navegadores antigos, sem cqw/cqh */
+@supports not (width: 1cqw) {
+  .tabuleiro {
+    --carta: min(9vw, 13vh);
+  }
+
+  @media (orientation: portrait) {
+    .tabuleiro {
+      --carta: min(20vw, 8vh);
+    }
+  }
+}
+
+/* ---------- Carta ---------- */
+.carta {
+  width: var(--carta);
+  aspect-ratio: 1;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  perspective: calc(var(--carta) * 6);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s linear 0s;
+}
+
+.carta__interno {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+.carta__face {
+  position: absolute;
+  inset: 0;
+  border: clamp(2px, calc(var(--carta) * 0.02), 4px) solid #fff;
+  border-radius: calc(var(--carta) * 0.08);
+  background-size: cover;
+  background-position: center;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  box-shadow: 0 0 10px rgba(255, 60, 60, 0.35);
+}
+
+/* Verso: colagem de personagens */
+.carta__verso {
+  background-color: #2a1a3a;
+  background-image:
+    url("../assets/img/verso-carta.jpg"),
+    linear-gradient(135deg, #f5b400 0%, #c1272d 50%, #1d3b8b 100%);
+}
+
+/* Frente: imagem definida pelo JS via --imagem */
+.carta__frente {
+  background-color: #fff;
+  background-image: var(--imagem, none);
+  transform: rotateY(180deg);
+}
+
+.carta:not(.carta--virada):hover .carta__interno {
+  transform: translateY(-4px);
+}
+
+.carta:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  border-radius: calc(var(--carta) * 0.08);
+}
+
+.carta--virada .carta__interno {
+  transform: rotateY(180deg);
+}
+
+/* Carta que sumiu do jogo (o espaço no grid é mantido) */
+.carta--removida {
+  opacity: 0;
+  transform: scale(0.6);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s linear 0.4s;
+}
+
+/* ---------- Menu de pausa (popover nativo) ---------- */
+/* O display só é definido quando aberto; fechado, o navegador esconde. */
+.menu-pausa {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  width: min(90vw, max(16rem, calc(var(--fonte-ui) * 12)));
+  padding: 1.2em 1em;
+  font-size: var(--fonte-ui);
+  color: inherit;
+  border: 0;
+}
+
+.menu-pausa:popover-open {
+  display: flex;
+}
+
+.menu-pausa::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.menu-pausa__titulo {
+  margin: 0 0 0.25em;
+  font-size: 1.2em;
+  font-weight: 800;
+}
+
+.menu-pausa .botao {
+  width: 100%;
+  font-size: 0.85em;
+}
+
+/* Navegadores sem popover: mantém o menu escondido em vez de aberto */
+@supports not selector(:popover-open) {
+  .menu-pausa {
+    display: none;
+  }
+}
+
+/* ---------- Telas em pé ---------- */
+@media (orientation: portrait) {
+  .placar {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25em 1.5em;
+  }
+}
+
+/* Celular: o botão de pausa fica só à esquerda do placar */
+@media (max-width: 700px) {
+  .topo {
+    grid-template-columns: var(--largura-pausa) 1fr;
+  }
+}
