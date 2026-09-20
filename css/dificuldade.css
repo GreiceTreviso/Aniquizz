@@ -1,0 +1,26 @@
+/* ==========================================================
+   dificuldade.css — Tela 3: Easy / Normal / Hard
+   ========================================================== */
+
+.tela--dificuldade {
+  display: grid;
+  place-items: center;
+  padding: 4vh 4vw;
+}
+
+.dificuldades {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 1.5rem;
+  width: var(--largura-painel);
+  min-height: clamp(16rem, 58vh, 40rem);
+  padding: clamp(1.5rem, 4vh, 3rem) clamp(1rem, 3vw, 3rem);
+}
+
+.dificuldades .botao {
+  width: min(100%, 7.5em);
+  font-size: calc(var(--fonte-ui) * 1.25);
+  font-weight: 500;
+}

@@ -1,0 +1,193 @@
+/* ==========================================================
+   base.css — estilos compartilhados por todas as telas
+   ========================================================== */
+
+:root {
+  /* Cores */
+  --cor-verde: #5fe600;
+  --cor-branco: #ffffff;
+  --cor-vermelho: #e60000;
+  --cor-lilas: #a78bfa;
+  --cor-painel: rgba(255, 255, 255, 0.6);
+  --cor-jogador-1: #d61fd6;
+  --cor-jogador-2: #2b59ff;
+
+  /* Tipografia */
+  --fonte: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Bordas */
+  --espessura-borda: clamp(2px, 0.14vw, 3px);
+  --borda-botao: var(--espessura-borda) solid #000;
+
+  /* Escala da interface: quase tudo (botões, títulos, logo, painéis)
+     é dimensionado a partir de --fonte-ui, então basta ajustar aqui.
+     Padrão = telas deitadas. */
+  --fonte-ui: clamp(1.1rem, 2.2vw, 2.6rem);
+  --largura-painel: clamp(20rem, 56vw, 70rem);
+}
+
+/* Telas em pé (celular e iPad): a largura é menor, então a
+   interface cresce para não ficar minúscula. */
+@media (orientation: portrait) {
+  :root {
+    --fonte-ui: clamp(1.25rem, 4vw, 3rem);
+    --largura-painel: min(88vw, 50rem);
+  }
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--fonte);
+  color: #000;
+  background: #05060f;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Texto só para leitores de tela */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Tela (ocupa a janela inteira) ---------- */
+.tela {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background-color: #05060f;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 var(--espessura-borda) #000; /* borda fina em volta do site */
+}
+
+/* Fundo com a colagem de personagens (telas 1, 2 e 3).
+   Sem a imagem, o degradê estrelado aparece no lugar. */
+.tela--animes {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+    url("../assets/img/fundo-animes.jpg"),
+    radial-gradient(circle at 30% 20%, #1b2a6b 0%, #070a1f 60%, #000 100%);
+}
+
+/* ---------- Logo "Anima" (canto superior direito, leva ao início) ---------- */
+.logo {
+  position: absolute;
+  top: clamp(0.5rem, 2vh, 1.5rem);
+  right: clamp(1rem, 2vw, 2.5rem);
+  font-size: calc(var(--fonte-ui) * 1.9);
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1;
+  color: #fff;
+  -webkit-text-stroke: 0.1em #000; /* contorno fino */
+  paint-order: stroke fill;
+  transform-origin: right top;
+  transition: transform 0.15s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.logo:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 6px;
+  border-radius: 0.2em;
+}
+
+/* ---------- Painel translúcido (telas 2 e 3) ---------- */
+.painel {
+  background: var(--cor-painel);
+  border-radius: var(--fonte-ui);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* ---------- Botão ---------- */
+.botao {
+  --cor-botao: var(--cor-branco);
+  --cor-texto-botao: #000;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15em 1.2em;
+  font-size: var(--fonte-ui);
+  line-height: 1.3;
+  color: var(--cor-texto-botao);
+  background: var(--cor-botao);
+  border: var(--borda-botao);
+  border-radius: 0.4em;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.botao:hover {
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.botao:active {
+  transform: scale(0.98);
+}
+
+.botao:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px #000;
+}
+
+.botao--verde    { --cor-botao: var(--cor-verde); }
+.botao--branco   { --cor-botao: var(--cor-branco); }
+.botao--vermelho { --cor-botao: var(--cor-vermelho); }
+.botao--lilas    { --cor-botao: var(--cor-lilas); }
+
+.botao--texto-claro { --cor-texto-botao: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
