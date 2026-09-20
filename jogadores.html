@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jogadores — Jogo da Memória de Animes</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,800;0,900;1,900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/jogadores.css">
+</head>
+<body>
+
+  <main class="tela tela--animes tela--jogadores">
+    <a class="logo" href="index.html" aria-label="Anima — voltar ao início">Anima</a>
+    <h1 class="sr-only">Escolha o número de jogadores</h1>
+
+    <nav class="painel modos" aria-label="Número de jogadores">
+
+      <a class="modo" href="dificuldade.html?jogadores=1" data-jogadores="1">
+        <img class="modo__icone" src="assets/img/icone-1-jogador.png" width="339" height="400" alt="">
+        <span class="botao botao--verde">1 Player</span>
+      </a>
+
+      <a class="modo" href="dificuldade.html?jogadores=2" data-jogadores="2">
+        <img class="modo__icone" src="assets/img/icone-2-jogadores.png" width="483" height="400" alt="">
+        <span class="botao botao--vermelho">2 Player</span>
+      </a>
+
+    </nav>
+  </main>
+
+  <!-- <script src="js/jogadores.js" defer></script> -->
+</body>
+</html>
