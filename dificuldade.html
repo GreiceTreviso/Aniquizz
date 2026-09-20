@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dificuldade — Jogo da Memória de Animes</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,800;0,900;1,900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/dificuldade.css">
+</head>
+<body>
+
+  <main class="tela tela--animes tela--dificuldade">
+    <a class="logo" href="index.html" aria-label="Anima — voltar ao início">Anima</a>
+    <h1 class="sr-only">Escolha a dificuldade</h1>
+
+    <nav class="painel dificuldades" aria-label="Dificuldade">
+      <a class="botao botao--verde" href="jogo.html?dificuldade=easy" data-repassar-opcoes>Easy</a>
+      <a class="botao botao--branco" href="jogo.html?dificuldade=normal" data-repassar-opcoes>Normal</a>
+      <a class="botao botao--vermelho botao--texto-claro" href="jogo.html?dificuldade=hard" data-repassar-opcoes>Hard</a>
+    </nav>
+  </main>
+
+  <script src="js/opcoes.js" defer></script>
+</body>
+</html>
