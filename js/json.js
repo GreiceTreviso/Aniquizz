@@ -4,163 +4,163 @@ const cartas = [
         {
           "id": 1,
           "nome": "David",
-          "image": "assets/img/imgAnime/david.jpeg"
+          "image": "assets/cartas/david.jpeg"
         },
         {
           "id": 2,
           "nome": "Freez",
-          "image": "assets/img/imgAnime/freez.jpeg"
+          "image": "assets/cartas/freez.jpeg"
         },
         {
           "id": 3,
           "nome": "Goku",
-          "image": "assets/img/imgAnime/goku.jpeg"
+          "image": "assets/cartas/goku.jpeg"
         },
         {
           "id": 4,
           "nome": "Kira",
-          "image": "assets/img/imgAnime/kira.jpeg"
+          "image": "assets/cartas/kira.jpeg"
         },
         {
           "id": 5,
           "nome": "L",
-          "image": "assets/img/imgAnime/L.jpeg"
+          "image": "assets/cartas/L.jpeg"
         },
         {
           "id": 6,
           "nome": "Levi",
-          "image": "assets/img/imgAnime/levi.jpeg"
+          "image": "assets/cartas/levi.jpeg"
         },
         {
           "id": 7,
           "nome": "Mark",
-          "image": "assets/img/imgAnime/mark.jpeg"
+          "image": "assets/cartas/mark.jpeg"
         },
         {
           "id": 8,
           "nome": "Mikasa",
-          "image": "assets/img/imgAnime/mikasa.jpeg"
+          "image": "assets/cartas/mikasa.jpeg"
         },
         {
           "id": 9,
           "nome": "Miku",
-          "image": "assets/img/imgAnime/miku.jpeg"
+          "image": "assets/cartas/miku.jpeg"
         },
         {
           "id": 10,
           "nome": "Obito",
-          "image": "assets/img/imgAnime/obito.jpeg"
+          "image": "assets/cartas/obito.jpeg"
         },
         {
           "id": 11,
           "nome": "Rebecca",
-          "image": "assets/img/imgAnime/rebecca.jpeg"
+          "image": "assets/cartas/rebecca.jpeg"
         },
         {
           "id": 12,
           "nome": "Ryu",
-          "image": "assets/img/imgAnime/ryu.jpeg"
+          "image": "assets/cartas/ryu.jpeg"
         },
         {
           "id": 13,
           "nome": "Sarakura",
-          "image": "assets/img/imgAnime/sarakura.jpeg"
+          "image": "assets/cartas/sarakura.jpeg"
         },
         {
           "id": 14,
           "nome": "Shadow",
-          "image": "assets/img/imgAnime/shadow.jpeg"
+          "image": "assets/cartas/shadow.jpeg"
         },
         {
           "id": 15,
           "nome": "Sonic",
-          "image": "assets/img/imgAnime/sonic.jpeg"
+          "image": "assets/cartas/sonic.jpeg"
         },
         {
           "id": 16,
           "nome": "Yuta",
-          "image": "assets/img/imgAnime/yuta.jpeg"
+          "image": "assets/cartas/yuta.jpeg"
         },
         
         {
             "id": 17,
             "nome": "Choso",
-            "image": "assets/img/imgAnime/choso.jpeg"
+            "image": "assets/cartas/choso.jpeg"
           },
           {
             "id": 18,
             "nome": "Deku",
-            "image": "assets/img/imgAnime/deku.jpeg"
+            "image": "assets/cartas/deku.jpeg"
           },
           {
             "id": 19,
             "nome": "Elric",
-            "image": "assets/img/imgAnime/elric.jpeg"
+            "image": "assets/cartas/elric.jpeg"
           },
           {
             "id": 20,
             "nome": "Frieren",
-            "image": "assets/img/imgAnime/frieren.jpeg"
+            "image": "assets/cartas/frieren.jpeg"
           },
           {
             "id": 21,
             "nome": "Itachi",
-            "image": "assets/img/imgAnime/itachi.jpeg"
+            "image": "assets/cartas/itachi.jpeg"
           },
           {
             "id": 22,
             "nome": "Kaguya",
-            "image": "assets/img/imgAnime/kaguya.jpeg"
+            "image": "assets/cartas/kaguya.jpeg"
           },
           {
             "id": 23,
             "nome": "Mahito",
-            "image": "assets/img/imgAnime/mahito.jpeg"
+            "image": "assets/cartas/mahito.jpeg"
           },
           {
             "id": 24,
             "nome": "Marin",
-            "image": "assets/img/imgAnime/marin.jpeg"
+            "image": "assets/cartas/marin.jpeg"
           },
           {
             "id": 25,
             "nome": "Milk",
-            "image": "assets/img/imgAnime/milk.jpeg"
+            "image": "assets/cartas/milk.jpeg"
           },
           {
             "id": 26,
             "nome": "Nami",
-            "image": "assets/img/imgAnime/nami.jpeg"
+            "image": "assets/cartas/nami.jpeg"
           },
           {
             "id": 27,
             "nome": "Nezuko",
-            "image": "assets/img/imgAnime/nezuko.jpeg"
+            "image": "assets/cartas/nezuko.jpeg"
           },
           {
             "id": 28,
             "nome": "Saiki",
-            "image": "assets/img/imgAnime/saiki.jpeg"
+            "image": "assets/cartas/saiki.jpeg"
           },
           {
             "id": 29,
             "nome": "Saitama",
-            "image": "assets/img/imgAnime/saitama.jpeg"
+            "image": "assets/cartas/saitama.jpeg"
           },
           {
             "id": 30,
             "nome": "Todo",
-            "image": "assets/img/imgAnime/todo.jpeg"
+            "image": "assets/cartas/todo.jpeg"
           },
           {
             "id": 31,
             "nome": "Toga",
-            "image": "assets/img/imgAnime/toga.jpeg"
+            "image": "assets/cartas/toga.jpeg"
           },
           {
             "id": 32,
             "nome": "Yuji",
-            "image": "assets/img/imgAnime/yuji.jpeg"
+            "image": "assets/cartas/yuji.jpeg"
           }
       ]
 ]

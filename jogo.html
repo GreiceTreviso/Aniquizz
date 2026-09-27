@@ -26,8 +26,12 @@
       <div class="placar" role="group" aria-label="Placar">
         <div class="placar__jogadores">
           <div class="placar__jogador placar__jogador--1">
+            <span class="placar__nome">Jogador 1</span>
             <span class="placar__pontos" id="pontos-jogador-1">0</span>
-            <span class="placar__erros">Erros restantes: <span id="erros-jogador-1">0</span></span>
+            <span class="placar__meta">
+              <span class="placar__erros">Erros: <span id="erros-jogador-1">0</span></span>
+              <span class="placar__tempo">⏱ <span id="tempo-jogador-1">20</span>s</span>
+            </span>
           </div>
 
           <svg class="placar__x so-2-jogadores" viewBox="0 0 24 24" aria-hidden="true">
@@ -35,12 +39,14 @@
           </svg>
 
           <div class="placar__jogador placar__jogador--2 so-2-jogadores">
+            <span class="placar__nome">Jogador 2</span>
             <span class="placar__pontos" id="pontos-jogador-2">0</span>
-            <span class="placar__erros">Erros restantes: <span id="erros-jogador-2">0</span></span>
+            <span class="placar__meta">
+              <span class="placar__erros">Erros: <span id="erros-jogador-2">0</span></span>
+              <span class="placar__tempo">⏱ <span id="tempo-jogador-2">20</span>s</span>
+            </span>
           </div>
         </div>
-
-        <p class="placar__tempo">Tempo: <span id="tempo">20</span> Segundos</p>
       </div>
     </header>
 
@@ -253,6 +259,22 @@
               popovertarget="menu-pausa" popovertargetaction="hide">Continuar</button>
       <!-- href vazio recarrega a página atual: recomeça a partida mantendo as opções da URL -->
       <a class="botao botao--branco" href="">Reiniciar</a>
+      <a class="botao botao--branco" href="jogadores.html">Mudar opções</a>
+      <a class="botao botao--vermelho botao--texto-claro" href="index.html">Sair</a>
+    </div>
+
+    <!-- Tela de fim de jogo: popover "manual" (não fecha clicando fora nem com
+         Esc) porque só deve fechar quando o jogador escolher um dos botões.
+         Quem abre é o JS, com painelFim.showPopover(), no Passo 12.
+         A classe painel-fim--vitoria/painel-fim--derrota (o JS liga uma delas)
+         é só o que muda a cor do título entre as duas telas. -->
+    <div class="painel painel-fim" id="painel-fim" popover="manual" aria-labelledby="titulo-fim">
+      <h2 class="painel-fim__titulo" id="titulo-fim">Fim de jogo</h2>
+      <p class="painel-fim__resultado" id="painel-fim-resultado">Resultado</p>
+      <p class="painel-fim__recorde" id="painel-fim-recorde" hidden>Novo recorde!</p>
+
+      <!-- href vazio recarrega a página atual: joga de novo com as mesmas opções -->
+      <a class="botao botao--verde" href="">Jogar de novo</a>
       <a class="botao botao--branco" href="jogadores.html">Mudar opções</a>
       <a class="botao botao--vermelho botao--texto-claro" href="index.html">Sair</a>
     </div>
