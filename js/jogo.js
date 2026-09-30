@@ -30,9 +30,9 @@
    Nº de cartas = pares x 2. Os valores 16, 24 e 32 dividem certinho
    por 8 e por 4 colunas (tela deitada e em pé), sem sobrar espaço. */
    const DIFICULDADES = {
-    easy:   { pares: 8,  tempo: { 1: 120, 2: 40 }, bonus: 5, erros: 25 },
-    normal: { pares: 12, tempo: { 1: 90,  2: 35 }, bonus: 4, erros: 20 },
-    hard:   { pares: 16, tempo: { 1: 45,  2: 30 }, bonus: 3, erros: 15 },
+    easy:   { pares: 8,  tempo: { 1: 60, 2: 60 }, bonus: 5, erros: 25 },
+    normal: { pares: 12, tempo: { 1: 40, 2: 40 }, bonus: 4, erros: 20 },
+    hard:   { pares: 16, tempo: { 1: 30, 2: 30 }, bonus: 3, erros: 15 },
   };
   
   const DIFICULDADE_PADRAO = "normal"; // se abrir jogo.html sem passar pela escolha
@@ -44,7 +44,11 @@
   
   // NOVO: por quanto tempo (ms) as cartas ficam viradas no início para o
   // jogador memorizar. O relógio só começa a correr depois disso.
-  const TEMPO_PREVIA = 3000;
+  const TEMPO_PREVIA = 2000;
+  
+  // NOVO: animação de embaralhamento das cartas (ms). Precisa bater com a
+  // duração de "carta-embaralhar" no jogo.css (1.4s) + o atraso escalonado.
+  const TEMPO_EMBARALHAR = 1700;
   
   // PASSO 14: sons de acerto e erro. Coloque os arquivos em assets/audio/
   // (se o arquivo não existir, tocarSom() só ignora o erro, sem travar o jogo).
@@ -123,7 +127,7 @@
     @keyframes aviso-pisca { 0% { transform: scale(1); } 40% { transform: scale(1.25); } 100% { transform: scale(1); } }
     html[data-jogadores="2"] .placar__jogador { transition: opacity .2s; }
     html[data-jogadores="2"] .placar__jogador:not(.placar__jogador--vez) { opacity: .45; }
-    html[data-jogadores="2"] .placar__jogador--vez { outline: 3px solid #ffd54a; outline-offset: 3px; border-radius: 8px; }
+    html[data-jogadores="2"] .placar__jogador--vez { outline: 3px solid #000; outline-offset: 3px; border-radius: 8px; }
   `;
   document.head.append(estiloDoAviso);
   tabuleiro.before(avisoDeVez);
@@ -225,6 +229,48 @@
   
       new Image().src = endereco; // pré-carrega, para a carta não piscar ao virar
     });
+  }
+  
+  /* ---------- NOVO: Animação de embaralhamento ----------
+     Todas as cartas (de costas) voam para o centro da mesa, balançam e
+     se espalham de volta. Cada carta recebe --dx/--dy (distância até o
+     centro) e --rot (giro); o movimento em si está no jogo.css.
+     Quando termina, chama aoTerminar (a prévia das cartas). */
+  function embaralharComAnimacao(aoTerminar) {
+    const reduzirMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduzirMovimento) {
+      aoTerminar();
+      return;
+    }
+  
+    emPrevia = true; // trava a pausa durante a animação
+    tabuleiro.classList.add("tabuleiro--travado");
+  
+    const cartasDaPartida = cartasNoTabuleiro.slice(0, totalDeCartas);
+    const areaDoTabuleiro = tabuleiro.getBoundingClientRect();
+    const centroX = areaDoTabuleiro.left + areaDoTabuleiro.width / 2;
+    const centroY = areaDoTabuleiro.top + areaDoTabuleiro.height / 2;
+  
+    cartasDaPartida.forEach((carta, indice) => {
+      const area = carta.getBoundingClientRect();
+      const dx = centroX - (area.left + area.width / 2);
+      const dy = centroY - (area.top + area.height / 2);
+      const giro = (Math.random() * 40 - 20).toFixed(1); // -20° a +20°
+  
+      carta.style.setProperty("--dx", `${dx}px`);
+      carta.style.setProperty("--dy", `${dy}px`);
+      carta.style.setProperty("--rot", `${giro}deg`);
+      carta.style.animationDelay = `${indice * 8}ms`;
+      carta.classList.add("carta--embaralhando");
+    });
+  
+    setTimeout(() => {
+      cartasDaPartida.forEach((carta) => {
+        carta.classList.remove("carta--embaralhando");
+        carta.style.animationDelay = "";
+      });
+      aoTerminar();
+    }, TEMPO_EMBARALHAR);
   }
   
   /* ---------- NOVO: Prévia (cartas viradas no início) ----------
@@ -418,6 +464,12 @@
     }
   
     if (jogadorAtual === indice) {
+      // Se ele tinha virado só UMA carta, ela desvira antes de passar a vez.
+      if (primeiraCarta && !segundaCarta) {
+        primeiraCarta.classList.remove("carta--virada");
+        primeiraCarta = null;
+      }
+  
       jogadorAtual = outroJogador;
       destacarJogadorDaVez();
       mostrarTempoDaVez();
@@ -564,7 +616,7 @@
     atualizarPlacar();
   
     pararCronometro();
-    mostrarPreviaDasCartas(); // o cronômetro começa depois da prévia
+    embaralharComAnimacao(mostrarPreviaDasCartas); // embaralha -> prévia -> cronômetro
   }
   
   /* ---------- Início ---------- */

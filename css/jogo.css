@@ -450,3 +450,61 @@
     grid-template-columns: var(--largura-pausa) 1fr;
   }
 }
+
+
+/* ---------- Animação: virar a carta ---------- */
+/* A carta dá um pulinho (sobe e cresce) enquanto gira. */
+@keyframes carta-vira {
+  0%   { transform: translateY(0) scale(1); }
+  40%  { transform: translateY(-10%) scale(1.15); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.carta--virada {
+  animation: carta-vira 0.5s ease;
+}
+
+/* ---------- Animação: embaralhar as cartas ---------- */
+/* As cartas vão ao centro da mesa (--dx/--dy, definidos pelo JS),
+   balançam e voltam ao lugar. Duração total: 1.4s (+ atraso por carta). */
+@keyframes carta-embaralhar {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+  30%  { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.75); }
+  40%  { transform: translate(calc(var(--dx) + 14px), var(--dy)) rotate(calc(var(--rot) * -1)) scale(0.75); }
+  50%  { transform: translate(calc(var(--dx) - 14px), var(--dy)) rotate(var(--rot)) scale(0.75); }
+  60%  { transform: translate(calc(var(--dx) + 14px), var(--dy)) rotate(calc(var(--rot) * -1)) scale(0.75); }
+  70%  { transform: translate(var(--dx), var(--dy)) rotate(0deg) scale(0.75); }
+  100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+
+.carta--embaralhando {
+  animation: carta-embaralhar 1.4s ease-in-out both;
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carta--virada,
+  .carta--embaralhando {
+    animation: none;
+  }
+}
+
+/* ---------- Tempo sempre do lado (também em tela em pé / celular) ---------- */
+@media (orientation: portrait) {
+  .placar {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 0.6em;
+    padding: 0.3em 0.6em;
+    font-size: calc(var(--fonte-ui) * 0.75);
+  }
+
+  .placar__jogadores {
+    gap: 0.6em;
+  }
+
+  .placar__tempo {
+    text-align: right;
+  }
+}
