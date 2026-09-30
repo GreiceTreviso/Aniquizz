@@ -58,33 +58,27 @@
 .placar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 1em;
-  justify-self: stretch; /* ocupa o espaço em branco do topo, em vez de ficar pequeno no centro */
-  width: 100%;
-  padding: 0.4em 1.2em;
-  font-size: calc(var(--fonte-ui) * 1.1); /* placar maior que o original, mas sem exagerar */
+  justify-self: center;
+  width: min(100%, max(60vw, 36rem));
+  padding: 0.3em 1em;
+  font-size: calc(var(--fonte-ui) * 0.9);
   background: rgba(255, 255, 255, 0.82);
-  border-radius: 0.8em;
+  border-radius: 0.6em;
 }
 
 .placar__jogadores {
-  flex: 1;
   display: flex;
   align-items: center;
-  /* Com 2 jogadores espalha as duas caixinhas pelos dois lados do placar;
-     com 1 jogador (só sobra um item), o space-evenly já centraliza sozinho. */
-  justify-content: space-evenly;
-  flex-wrap: wrap; /* em telas bem estreitas, evita que os dois jogadores estourem a largura */
-  gap: 0.4em 1.2em;
+  gap: 1.2em;
 }
 
 .placar__jogador {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.2em 0.9em;
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
 .placar__jogador--1 { color: var(--cor-jogador-1); }
@@ -96,33 +90,19 @@
   text-align: center;
 }
 
-/* PASSO 10: cada jogador tem seu próprio relógio, então erros e tempo
-   ficam lado a lado, embaixo dos pontos do respectivo jogador.
-   flex-wrap: se não couber lado a lado (tela estreita + fonte grande),
-   "Erros: X" e o relógio quebram para linhas separadas em vez de
-   estourar a caixinha ou cortar o texto. */
-.placar__meta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.2em 0.6em;
-  font-size: 0.68em;
-}
-
-.placar__erros,
-.placar__tempo {
+.placar__erros {
+  font-size: 0.7em;
   white-space: nowrap;
-}
-
-/* PASSO 10: relógio quase no fim (ver TEMPO_CRITICO no jogo.js) */
-.placar__tempo--critico {
-  color: var(--cor-vermelho);
-  font-weight: 800;
 }
 
 .placar__x {
   width: 1.1em;
   height: 1.1em;
+}
+
+.placar__tempo {
+  margin: 0;
+  white-space: nowrap;
 }
 
 /* Com 1 jogador, some tudo que é do jogador 2 */
@@ -149,7 +129,7 @@
   --carta: min(
     calc(100cqw / (var(--colunas) + (var(--colunas) - 1) * var(--espaco))),
     calc(100cqh / (var(--linhas) + (var(--linhas) - 1) * var(--espaco))),
-    16.5rem
+    14rem
   );
 
   display: grid;
@@ -294,57 +274,19 @@
   }
 }
 
-/* ---------- PASSO 8: jogador da vez (modo 2 jogadores) ----------
-   O JS liga/desliga .placar__jogador--vez em cada .placar__jogador.
-   Sem essa classe, o jogador fica "apagado"; com ela, ganha o
-   contorno e o fundo na sua própria cor (--cor-jogador-1/2), além
-   do nome que pulsa para chamar a atenção. */
-.placar__nome {
-  font-size: 0.62em;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  opacity: 0.55;
-}
-
-.placar__jogador {
-  padding: 0.3em 1.2em;
-  border: 2px solid transparent;
-  border-radius: 0.6em;
-  opacity: 0.55;
-  transform: scale(0.94);
-  transition: opacity 0.25s ease, transform 0.25s ease,
-              border-color 0.25s ease, background-color 0.25s ease;
-}
-
-/* No modo 1 jogador ninguém fica "apagado": só existe um jogador. */
-[data-jogadores="1"] .placar__jogador {
-  opacity: 1;
-  transform: none;
-}
-
+/* ---------- PASSO 8: destaque do jogador da vez ---------- */
 .placar__jogador--vez {
-  opacity: 1;
-  transform: scale(1);
-  border-color: currentColor;
-  background: color-mix(in srgb, currentColor 14%, transparent);
+  position: relative;
 }
 
-.placar__jogador--vez .placar__nome {
-  opacity: 1;
-  animation: nome-jogador-pulso 1.4s ease-in-out infinite;
-}
-
-@keyframes nome-jogador-pulso {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.55; }
-}
-
-/* Navegadores sem color-mix: fundo sólido mais discreto */
-@supports not (background: color-mix(in srgb, red 10%, transparent)) {
-  .placar__jogador--vez {
-    background: currentColor;
-  }
+.placar__jogador--vez::after {
+  content: "";
+  position: absolute;
+  inset: -0.2em -0.5em;
+  z-index: -1;
+  border-radius: 0.4em;
+  background: currentColor;
+  opacity: 0.18;
 }
 
 /* ---------- Tela de fim de jogo (popover nativo, igual ao menu de pausa) ----------
@@ -374,11 +316,8 @@
 
 .painel-fim__titulo {
   margin: 0;
-  padding: 0.15em 0.6em;
   font-size: 1.4em;
   font-weight: 900;
-  border: 1.5px solid #000; /* fina, só o necessário para destacar do fundo */
-  border-radius: 0.35em;
 }
 
 .painel-fim--vitoria .painel-fim__titulo { color: var(--cor-verde); }
@@ -391,11 +330,8 @@
 
 .painel-fim__recorde {
   margin: 0;
-  padding: 0.15em 0.6em;
   color: var(--cor-verde);
   font-weight: 800;
-  border: 1.5px solid #000;
-  border-radius: 0.35em;
 }
 
 .painel-fim .botao {
@@ -420,8 +356,87 @@
   animation: carta-acerto-pulso 0.35s ease;
 }
 
-/* ---------- Telas em pé e celulares estreitos: o placar pode quebrar linha ---------- */
-@media (orientation: portrait), (max-width: 700px) {
+/* ---------- PASSO 8/12: destaque visual ---------- */
+
+/* Jogador da vez (modo 2 jogadores): o JS liga/desliga esta classe. */
+.placar__jogador--vez {
+  position: relative;
+}
+
+.placar__jogador--vez::after {
+  content: "";
+  position: absolute;
+  inset: -0.2em -0.5em;
+  z-index: -1;
+  border-radius: 0.4em;
+  background: currentColor;
+  opacity: 0.18;
+}
+
+/* ---------- Tela de fim de jogo (popover nativo, igual ao menu de pausa) ---------- */
+.painel-fim {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  width: min(90vw, max(18rem, calc(var(--fonte-ui) * 13)));
+  padding: 1.4em 1.2em;
+  font-size: var(--fonte-ui);
+  color: inherit;
+  text-align: center;
+  border: 0;
+}
+
+.painel-fim:popover-open {
+  display: flex;
+}
+
+.painel-fim::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.painel-fim__titulo {
+  margin: 0;
+  font-size: 1.4em;
+  font-weight: 900;
+}
+
+.painel-fim__resultado {
+  margin: 0;
+  font-weight: 500;
+}
+
+.painel-fim__recorde {
+  margin: 0;
+  color: var(--cor-verde, #2e9c4d);
+  font-weight: 800;
+}
+
+.painel-fim .botao {
+  width: 100%;
+  font-size: 0.85em;
+}
+
+@supports not selector(:popover-open) {
+  .painel-fim {
+    display: none;
+  }
+}
+
+/* ---------- PASSO 14: animação ao acertar um par ---------- */
+@keyframes carta-acerto-pulso {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.carta--acertou .carta__interno {
+  animation: carta-acerto-pulso 0.35s ease;
+}
+
+/* ---------- Telas em pé ---------- */
+@media (orientation: portrait) {
   .placar {
     flex-wrap: wrap;
     justify-content: center;
@@ -433,30 +448,5 @@
 @media (max-width: 700px) {
   .topo {
     grid-template-columns: var(--largura-pausa) 1fr;
-  }
-}
-
-/* Celulares bem estreitos: encolhe um pouco o espaçamento pra tudo caber */
-@media (max-width: 420px) {
-  .topo {
-    gap: 0.5rem;
-  }
-
-  .placar {
-    padding: 0.4em 0.8em;
-  }
-}
-
-/* Celular na horizontal (pouca altura): enxuga o topo pra sobrar mais
-   espaço vertical pro tabuleiro, que é o que mais precisa de espaço aqui. */
-@media (orientation: landscape) and (max-height: 500px) {
-  .tela--jogo {
-    gap: 0.4rem;
-    padding-block: 0.4rem;
-  }
-
-  .placar {
-    padding-block: 0.25em;
-    font-size: calc(var(--fonte-ui) * 0.85);
   }
 }

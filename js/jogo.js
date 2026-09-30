@@ -40,8 +40,6 @@ const COLUNAS_TELA_EM_PE = 4;
 const ATRASO_ACERTO = 600; // ms que o par certo fica à vista antes de sumir
 const ATRASO_ERRO = 900;   // ms que o par errado fica à vista antes de desvirar
 
-const TEMPO_CRITICO = 5; // segundos: abaixo disso, o relógio do jogador fica vermelho
-
 // PASSO 14: sons de acerto e erro. Coloque os arquivos em assets/audio/
 // (se o arquivo não existir, tocarSom() só ignora o erro, sem travar o jogo).
 const SOM_ACERTO = new Audio("assets/audio/acerto.mp3");
@@ -68,10 +66,30 @@ const numeroDeJogadores = Number(raiz.dataset.jogadores); // 1 ou 2 (opcoes.js a
 const configuracao = DIFICULDADES[nomeDificuldade];
 const totalDeCartas = configuracao.pares * 2;
 
-/* ---------- PASSO 3: Selecionar os elementos do DOM ----------
-   TODO: implementar a seleção das cartas, tabuleiro, placares, erros,
-   tempo e menu de pausa antes de continuar os próximos passos.
-*/
+/* ---------- Dados e elementos da tela ----------
+   "cartas" (do json.js) pode ser uma lista simples ou uma lista dentro
+   de outra lista (como está hoje). O nome "cartas" já é do json.js,
+   por isso as cartas do HTML se chamam "cartasNoTabuleiro". */
+const personagens = Array.isArray(cartas[0]) ? cartas[0] : cartas;
+
+const tabuleiro = document.getElementById("tabuleiro");
+const cartasNoTabuleiro = [...tabuleiro.querySelectorAll(".carta")];
+const campoTempo = document.getElementById("tempo");
+const camposErros = [
+  document.getElementById("erros-jogador-1"),
+  document.getElementById("erros-jogador-2"),
+];
+const camposPontos = [
+  document.getElementById("pontos-jogador-1"),
+  document.getElementById("pontos-jogador-2"),
+];
+const menuPausa = document.getElementById("menu-pausa");
+const painelFim = document.getElementById("painel-fim");
+const painelFimTitulo = document.getElementById("titulo-fim");
+const painelFimResultado = document.getElementById("painel-fim-resultado");
+const painelFimRecorde = document.getElementById("painel-fim-recorde");
+
+const telaEmPe = window.matchMedia("(orientation: portrait)");
 
 /* ---------- Estado da jogada ---------- */
 let primeiraCarta = null;
@@ -85,21 +103,14 @@ let jogadorAtual = 0;
 
 // Um objeto de placar por jogador, em vez de variáveis soltas:
 // facilita repetir a lógica no Passo 8/9 sem duplicar código.
-// PASSO 10 (tempo individual): cada jogador tem o seu próprio "tempo",
-// que só corre enquanto é a vez dele. Ganha bônus quando acerta um par
-// e, se chegar a 0, esse jogador perde na hora.
 let placar = [
-  { pontos: 0, erros: configuracao.erros, tempo: configuracao.tempo },
-  { pontos: 0, erros: configuracao.erros, tempo: configuracao.tempo },
+  { pontos: 0, erros: configuracao.erros },
+  { pontos: 0, erros: configuracao.erros },
 ];
-
-// PASSO 10 (novo): no modo 2 jogadores, ficar sem tempo não é mais perder na
-// hora — o jogador só fica "fora" (não joga mais). foraDoTempo[i] === true
-// quer dizer que o jogador i não pode mais jogar porque o tempo dele acabou.
-let foraDoTempo = [false, false];
 
 let paresEncontrados = 0; // usado no Passo 12 para saber se venceu
 
+let tempoRestante = configuracao.tempo;
 let idDoTimer = null; // vai guardar o retorno do setInterval (Passo 10)
 
 let jogoPausado = false;
@@ -125,10 +136,7 @@ function ajustarGrade() {
 
 // Troca os valores fixos do HTML pelos da dificuldade escolhida.
 function mostrarConfiguracaoNoPlacar() {
-  camposTempo.forEach((campo) => {
-    campo.textContent = configuracao.tempo;
-    campo.classList.remove("placar__tempo--critico");
-  });
+  campoTempo.textContent = configuracao.tempo;
   camposErros.forEach((campo) => {
     campo.textContent = configuracao.erros;
   });
@@ -179,20 +187,11 @@ function atualizarPlacar() {
   placar.forEach((dados, indice) => {
     camposPontos[indice].textContent = dados.pontos;
     camposErros[indice].textContent = dados.erros;
-    camposTempo[indice].textContent = dados.tempo;
-    camposTempo[indice].classList.toggle("placar__tempo--critico", dados.tempo <= TEMPO_CRITICO);
   });
 
   // Regra: o jogo acaba quando os erros de quem está jogando chegam a 0.
-  // Se isso acontece depois que o outro jogador já tinha ficado sem tempo
-  // (ele estava jogando sozinho "valendo"), quem vence é decidido pelos
-  // pontos, e não pela tela genérica de "ficou sem erros".
   if (placar[jogadorAtual].erros <= 0) {
-    if (numeroDeJogadores === 2 && foraDoTempo.some(Boolean)) {
-      finalizarJogoPorPontos();
-    } else {
-      finalizarJogo("erros");
-    }
+    finalizarJogo("erros");
   }
 }
 
@@ -227,7 +226,7 @@ function compararPar() {
 
       paresEncontrados++;
       placar[jogadorAtual].pontos++;
-      placar[jogadorAtual].tempo += configuracao.bonus; // bônus só no relógio de quem acertou
+      tempoRestante += configuracao.bonus; // bônus por acertar
     } else {
       primeiraCarta.classList.remove("carta--virada");
       segundaCarta.classList.remove("carta--virada");
@@ -263,10 +262,7 @@ function compararPar() {
 function trocarDeJogador() {
   if (numeroDeJogadores < 2) return;
 
-  const outroJogador = jogadorAtual === 0 ? 1 : 0;
-  if (foraDoTempo[outroJogador]) return; // o outro já ficou sem tempo: continua com quem está jogando
-
-  jogadorAtual = outroJogador;
+  jogadorAtual = jogadorAtual === 0 ? 1 : 0;
   destacarJogadorDaVez();
 }
 
@@ -279,24 +275,15 @@ function destacarJogadorDaVez() {
   });
 }
 
-/* ---------- PASSO 10: Cronômetro (um relógio por jogador) ----------
-   Existe um único setInterval rodando, mas a cada segundo ele desconta
-   do relógio de quem está jogando agora (placar[jogadorAtual].tempo).
-   Como jogadorAtual muda ao trocar de vez, o relógio "certo" volta a
-   correr sozinho, sem precisar parar/reiniciar o timer ao trocar. */
+/* ---------- PASSO 10: Cronômetro ---------- */
+
 function iniciarCronometro() {
   idDoTimer = setInterval(() => {
-    const jogadorDoTique = jogadorAtual;
+    tempoRestante--;
+    campoTempo.textContent = tempoRestante;
 
-    placar[jogadorDoTique].tempo--;
-    camposTempo[jogadorDoTique].textContent = placar[jogadorDoTique].tempo;
-    camposTempo[jogadorDoTique].classList.toggle(
-      "placar__tempo--critico",
-      placar[jogadorDoTique].tempo <= TEMPO_CRITICO
-    );
-
-    if (placar[jogadorDoTique].tempo <= 0) {
-      aoZerarOTempo(jogadorDoTique);
+    if (tempoRestante <= 0) {
+      aoZerarOTempo();
     }
   }, 1000);
 }
@@ -306,34 +293,10 @@ function pararCronometro() {
   idDoTimer = null;
 }
 
-// Regra do relógio zerando:
-// - 1 jogador: ele perde, fim de jogo na hora (como antes).
-// - 2 jogadores: quem ficou sem tempo NÃO perde na hora. Ele só fica "fora"
-//   (não joga mais) e a vez passa pro outro, que continua jogando sozinho
-//   com o próprio relógio. O jogo só termina de vez quando os dois
-//   ficarem sem tempo (ou o jogador que sobrou ficar sem erros, ou
-//   completar o tabuleiro) — e aí o vencedor é decidido pelo placar de
-//   pontos, não por quem "sobrou" por último.
-function aoZerarOTempo(jogadorSemTempo) {
-  if (numeroDeJogadores === 1) {
-    finalizarJogo("tempo");
-    return;
-  }
-
-  foraDoTempo[jogadorSemTempo] = true;
-  const outroJogador = jogadorSemTempo === 0 ? 1 : 0;
-
-  if (foraDoTempo[outroJogador]) {
-    // Os dois já ficaram sem tempo: decide quem venceu pelos pontos.
-    finalizarJogoPorPontos();
-    return;
-  }
-
-  // O outro ainda tem tempo: a vez passa pra ele e o jogo continua.
-  if (jogadorAtual !== outroJogador) {
-    jogadorAtual = outroJogador;
-    destacarJogadorDaVez();
-  }
+// Regra: tempo esgotado é fim de jogo na hora (derrota), não desconta erro
+// nem passa a vez — o jogo simplesmente acaba.
+function aoZerarOTempo() {
+  finalizarJogo("tempo");
 }
 
 /* ---------- PASSO 11: Pausa (popover nativo) ----------
@@ -361,21 +324,12 @@ if (menuPausa) {
 
 /* ---------- PASSO 12: Telas de vitória e derrota ---------- */
 
-function finalizarJogo(motivo, dados) {
+function finalizarJogo(motivo) {
   jogoTerminado = true;
   pararCronometro();
   tabuleiro.classList.add("tabuleiro--travado");
 
-  if (motivo === "vitoria") {
-    mostrarTelaDeVitoria();
-  } else if (motivo === "pontos-vencedor") {
-    mostrarTelaDeVitoriaPorPontos(dados.vencedor);
-  } else if (motivo === "pontos-empate") {
-    mostrarTelaDeEmpatePorPontos();
-  } else {
-    mostrarTelaDeDerrota(motivo);
-  }
-
+  motivo === "vitoria" ? mostrarTelaDeVitoria() : mostrarTelaDeDerrota(motivo);
   painelFim.showPopover();
 }
 
@@ -404,43 +358,7 @@ function mostrarTelaDeVitoria() {
     painelFimResultado.textContent = `Você encontrou todos os ${placar[0].pontos} pares!`;
   }
 
-  // Recorde: soma do tempo que sobrou nos dois relógios (no 1 jogador é só o dele).
-  const tempoFinal = placar[0].tempo + (numeroDeJogadores === 2 ? placar[1].tempo : 0);
-  painelFimRecorde.hidden = !verificarRecorde(tempoFinal);
-}
-
-// PASSO 10 (novo): quando a partida termina porque os dois ficaram sem
-// tempo (ou o jogador que sobrou ficou sem erros), o vencedor é sempre
-// quem tiver mais pontos no placar — não importa quem ficou sem tempo
-// primeiro nem quem estava jogando por último.
-function finalizarJogoPorPontos() {
-  const [placarJogador1, placarJogador2] = placar;
-
-  if (placarJogador1.pontos === placarJogador2.pontos) {
-    finalizarJogo("pontos-empate");
-  } else {
-    const vencedor = placarJogador1.pontos > placarJogador2.pontos ? 0 : 1;
-    finalizarJogo("pontos-vencedor", { vencedor });
-  }
-}
-
-function mostrarTelaDeVitoriaPorPontos(vencedor) {
-  definirTemaDoPainel("vitoria");
-  painelFimTitulo.textContent = "🏆 Vitória!";
-
-  const perdedor = vencedor === 0 ? 1 : 0;
-  painelFimResultado.textContent =
-    `Fim de jogo! Jogador ${vencedor + 1} venceu no placar (${placar[vencedor].pontos} x ${placar[perdedor].pontos}).`;
-
-  painelFimRecorde.hidden = true; // essa vitória é decidida pelo placar, não por completar o tabuleiro
-}
-
-function mostrarTelaDeEmpatePorPontos() {
-  definirTemaDoPainel("vitoria");
-  painelFimTitulo.textContent = "🤝 Empate!";
-  painelFimResultado.textContent = `Fim de jogo! Empate: ${placar[0].pontos} pares cada.`;
-
-  painelFimRecorde.hidden = true;
+  painelFimRecorde.hidden = !verificarRecorde(tempoRestante);
 }
 
 function mostrarTelaDeDerrota(motivo) {
@@ -498,11 +416,11 @@ function iniciarJogo() {
   segundaCarta = null;
   jogadorAtual = 0;
   paresEncontrados = 0;
-  foraDoTempo = [false, false];
   placar = [
-    { pontos: 0, erros: configuracao.erros, tempo: configuracao.tempo },
-    { pontos: 0, erros: configuracao.erros, tempo: configuracao.tempo },
+    { pontos: 0, erros: configuracao.erros },
+    { pontos: 0, erros: configuracao.erros },
   ];
+  tempoRestante = configuracao.tempo;
 
   esconderCartasExtras();
   ajustarGrade();
