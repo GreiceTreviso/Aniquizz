@@ -68,6 +68,13 @@ button {
   font: inherit;
 }
 
+/* Toque no celular: sem atraso/zoom por toque duplo e sem "flash" cinza */
+a,
+button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -168,6 +175,15 @@ button {
 
 .botao:active {
   transform: scale(0.98);
+}
+
+/* Tela de toque: o "hover" ficaria preso depois do toque */
+@media (hover: none) {
+  .botao:hover {
+    transform: none;
+    filter: none;
+    box-shadow: none;
+  }
 }
 
 .botao:focus-visible {

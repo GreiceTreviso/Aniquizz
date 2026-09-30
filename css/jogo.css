@@ -435,23 +435,6 @@
   animation: carta-acerto-pulso 0.35s ease;
 }
 
-/* ---------- Telas em pé ---------- */
-@media (orientation: portrait) {
-  .placar {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.25em 1.5em;
-  }
-}
-
-/* Celular: o botão de pausa fica só à esquerda do placar */
-@media (max-width: 700px) {
-  .topo {
-    grid-template-columns: var(--largura-pausa) 1fr;
-  }
-}
-
-
 /* ---------- Animação: virar a carta ---------- */
 /* A carta dá um pulinho (sobe e cresce) enquanto gira. */
 @keyframes carta-vira {
@@ -490,14 +473,35 @@
   }
 }
 
-/* ---------- Tempo sempre do lado (também em tela em pé / celular) ---------- */
+/* ==========================================================
+   RESPONSIVO — CELULAR
+   ========================================================== */
+
+/* Textos curtos do placar (só aparecem no celular) */
+.placar__unidade-curta {
+  display: none;
+}
+
+/* A faixa "Vez do Jogador" (criada pelo JS) não pode tomar espaço à toa */
+.tela--jogo #aviso-de-vez {
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+
+/* Tela em pé: o tempo continua do lado (direita) do placar */
 @media (orientation: portrait) {
+  .topo {
+    grid-template-columns: var(--largura-pausa) 1fr;
+    gap: 0.5rem;
+  }
+
   .placar {
     flex-wrap: nowrap;
     justify-content: space-between;
-    gap: 0.6em;
+    gap: 0.5em;
+    width: 100%;
     padding: 0.3em 0.6em;
-    font-size: calc(var(--fonte-ui) * 0.75);
+    font-size: calc(var(--fonte-ui) * 0.8);
   }
 
   .placar__jogadores {
@@ -507,4 +511,95 @@
   .placar__tempo {
     text-align: right;
   }
+}
+
+/* Celular em pé (telas estreitas): textos mais curtos para tudo caber */
+@media (max-width: 560px) {
+  .tela--jogo {
+    gap: 0.5rem;
+    padding: 0.6rem;
+  }
+
+  .topo {
+    --largura-pausa: 2.6rem;
+  }
+
+  .placar {
+    font-size: calc(var(--fonte-ui) * 0.75);
+  }
+
+  /* "Erros restantes" vira "Erros" (continua lido por leitores de tela) */
+  .placar__extra {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .placar__erros {
+    font-size: 0.75em;
+  }
+
+  /* "Segundos" vira "s" */
+  .placar__unidade-longa {
+    display: none;
+  }
+
+  .placar__unidade-curta {
+    display: inline;
+  }
+
+  .tela--jogo #aviso-de-vez {
+    padding: 0.3rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+/* Celular deitado (pouca altura): tudo mais compacto para sobrar espaço às cartas */
+@media (orientation: landscape) and (max-height: 500px) {
+  .tela--jogo {
+    gap: 0.35rem;
+    padding: 0.5rem clamp(0.75rem, 3vw, 2rem);
+  }
+
+  .topo {
+    --largura-pausa: 2.4rem;
+  }
+
+  .placar {
+    padding: 0.15em 0.8em;
+    font-size: calc(var(--fonte-ui) * 0.8);
+  }
+
+  .tela--jogo #aviso-de-vez {
+    padding: 0.15rem 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .menu-pausa,
+  .painel-fim {
+    padding-block: 0.8em;
+    gap: 0.4em;
+  }
+}
+
+/* Menus (pausa e fim de jogo) nunca passam da tela, mesmo deitado */
+.menu-pausa,
+.painel-fim {
+  max-height: 94dvh;
+  overflow-y: auto;
+}
+
+/* Tela de toque: sem "hover" preso depois de tocar numa carta */
+@media (hover: none) {
+  .carta:not(.carta--virada):hover .carta__interno {
+    transform: none;
+  }
+}
+
+/* Resultado do fim de jogo: respeita a quebra de linha (um jogador por linha) */
+.painel-fim__resultado {
+  white-space: pre-line;
 }

@@ -130,7 +130,9 @@
     html[data-jogadores="2"] .placar__jogador--vez { outline: 3px solid #000; outline-offset: 3px; border-radius: 8px; }
   `;
   document.head.append(estiloDoAviso);
-  tabuleiro.before(avisoDeVez);
+  // A faixa fica ENTRE o topo e a mesa (e não dentro da mesa), senão ela
+  // toma espaço do tabuleiro e as cartas passam do fim da tela no celular.
+  tabuleiro.closest(".mesa").before(avisoDeVez);
   
   /* ---------- Estado da jogada ---------- */
   let primeiraCarta = null;
@@ -537,7 +539,7 @@
     }
   
     painelFimResultado.textContent =
-      `Jogador 1: ${jogador1.pontos} pares | Jogador 2: ${jogador2.pontos} pares`;
+      `Jogador 1: ${jogador1.pontos} pares\nJogador 2: ${jogador2.pontos} pares`;
   
     painelFimRecorde.hidden = true; // recorde só vale no modo 1 jogador
   }
