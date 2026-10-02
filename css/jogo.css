@@ -1,26 +1,3 @@
-/* ==========================================================
-   jogo.css — Tela 4: topo (pausa + placar), mesa de cartas e menu
-
-   Classes de estado que o JavaScript pode ligar/desligar:
-
-   .carta--virada      carta virada (mostra a imagem)
-   .carta--removida    par encontrado: a carta some, mas continua
-                       ocupando o lugar no grid
-   .tabuleiro--travado bloqueia cliques (ex.: enquanto compara
-                       duas cartas viradas)
-
-   Variáveis CSS que o JavaScript pode alterar no #tabuleiro:
-
-   --colunas / --linhas   tamanho do grid (o CSS já ajusta o
-                          tamanho das cartas para caber na tela)
-   --imagem (em cada .carta)   ex.: url("assets/img/naruto.jpg")
-
-   Modo de jogo (definido por js/opcoes.js):
-
-   <html data-jogadores="1">  esconde o jogador 2 e o "X" do placar
-   <html data-jogadores="2">  mostra os dois jogadores
-   ========================================================== */
-
 .tela--jogo {
   display: flex;
   flex-direction: column;

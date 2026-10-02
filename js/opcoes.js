@@ -1,15 +1,3 @@
-/* ==========================================================
-   opcoes.js — repassa as escolhas do jogador entre as telas
-
-   Lê ?jogadores=1|2 e ?dificuldade=easy|normal|hard da URL e:
-   1. grava os valores em <html data-jogadores data-dificuldade>,
-      para o CSS (e o seu JS) saberem o modo de jogo;
-   2. acrescenta essas escolhas aos links marcados com
-      data-repassar-opcoes.
-
-   Não tem nenhuma regra do jogo: isso continua com o seu JS.
-   ========================================================== */
-
 const VALORES_VALIDOS = {
   jogadores: ["1", "2"],
   dificuldade: ["easy", "normal", "hard"],

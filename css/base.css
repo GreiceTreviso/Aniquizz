@@ -9,8 +9,8 @@
   --cor-vermelho: #e60000;
   --cor-lilas: #a78bfa;
   --cor-painel: rgba(255, 255, 255, 0.6);
-  --cor-jogador-1: #d61fd6;
-  --cor-jogador-2: #2b59ff;
+  --cor-jogador-1: #1e88e5;
+  --cor-jogador-2:  #e53935;
 
   /* Tipografia */
   --fonte: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
