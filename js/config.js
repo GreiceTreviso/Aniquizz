@@ -23,3 +23,8 @@ const TEMPO_EMBARALHAR = 1700;
 // (se o arquivo não existir, tocarSom() só ignora o erro, sem travar o jogo).
 const SOM_ACERTO = new Audio("assets/audio/acerto.mp3");
 const SOM_ERRO = new Audio("assets/audio/erro.mp3");
+
+// Acessibilidade: true = quem ligou "reduzir movimento" no sistema fica SEM animações
+// (carta vira instantaneamente, sem embaralhar). false = o jogo sempre anima.
+const RESPEITAR_REDUZIR_MOVIMENTO = false;
+if (!RESPEITAR_REDUZIR_MOVIMENTO) document.documentElement.dataset.animacaoForcada = "";

@@ -1,0 +1,576 @@
+.tela--jogo {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 2.5vh, 2rem);
+  height: 100vh;
+  height: 100dvh; /* a tela nunca passa da janela: o tabuleiro se encaixa */
+  padding: clamp(0.75rem, 3vh, 2.5rem) clamp(0.75rem, 3vw, 3rem);
+  /* --fundo-jogo é definido pelo js/jogo.js (um fundo sorteado a cada partida) */
+  background-image:
+    var(--fundo-jogo, none),
+    radial-gradient(circle at 50% 20%, #7a1c24 0%, #3b0d18 45%, #12040a 100%);
+}
+
+/* ---------- Topo: botão de pausa + placar ---------- */
+.topo {
+  --largura-pausa: clamp(2.5rem, 4vw, 4rem);
+
+  display: grid;
+  grid-template-columns: var(--largura-pausa) 1fr var(--largura-pausa);
+  align-items: center;
+  gap: 1rem;
+}
+
+.botao-pausa {
+  width: var(--largura-pausa);
+  aspect-ratio: 1;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.botao-pausa__icone {
+  width: 45%;
+}
+
+/* ---------- Placar ---------- */
+.placar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  justify-self: center;
+  width: min(100%, max(60vw, 36rem));
+  padding: 0.3em 1em;
+  font-size: calc(var(--fonte-ui) * 0.9);
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 0.6em;
+}
+
+.placar__jogadores {
+  display: flex;
+  align-items: center;
+  gap: 1.2em;
+}
+
+.placar__jogador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+}
+
+.placar__jogador--1 { color: var(--cor-jogador-1); }
+.placar__jogador--2 { color: var(--cor-jogador-2); }
+
+.placar__pontos {
+  min-width: 0.7em;
+  font-weight: 500;
+  text-align: center;
+}
+
+.placar__erros {
+  font-size: 0.7em;
+  white-space: nowrap;
+}
+
+.placar__x {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.placar__tempo {
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Com 1 jogador, some tudo que é do jogador 2 */
+[data-jogadores="1"] .so-2-jogadores {
+  display: none;
+}
+
+/* ---------- Mesa: ocupa o espaço que sobra e mede o tabuleiro ---------- */
+.mesa {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  container-type: size; /* habilita as unidades cqw / cqh usadas abaixo */
+}
+
+/* ---------- Tabuleiro ---------- */
+.tabuleiro {
+  --colunas: 8;
+  --linhas: 4;
+  --espaco: 0.18; /* espaço entre cartas, como fração do tamanho da carta */
+
+  /* Maior carta que ainda cabe na mesa, na largura e na altura */
+  --carta: min(
+    calc(100cqw / (var(--colunas) + (var(--colunas) - 1) * var(--espaco))),
+    calc(100cqh / (var(--linhas) + (var(--linhas) - 1) * var(--espaco))),
+    14rem
+  );
+
+  display: grid;
+  grid-template-columns: repeat(var(--colunas), var(--carta));
+  gap: calc(var(--carta) * var(--espaco));
+}
+
+.tabuleiro--travado {
+  pointer-events: none;
+}
+
+/* Telas em pé (celular e iPad): 4 colunas x 8 linhas aproveitam melhor a altura */
+@media (orientation: portrait) {
+  .tabuleiro {
+    --colunas: 4;
+    --linhas: 8;
+  }
+}
+
+/* Navegadores antigos, sem cqw/cqh */
+@supports not (width: 1cqw) {
+  .tabuleiro {
+    --carta: min(9vw, 13vh);
+  }
+
+  @media (orientation: portrait) {
+    .tabuleiro {
+      --carta: min(20vw, 8vh);
+    }
+  }
+}
+
+/* ---------- Carta ---------- */
+.carta {
+  width: var(--carta);
+  aspect-ratio: 1;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  perspective: calc(var(--carta) * 6);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s linear 0s;
+}
+
+.carta__interno {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+.carta__face {
+  position: absolute;
+  inset: 0;
+  border: clamp(2px, calc(var(--carta) * 0.02), 4px) solid #fff;
+  border-radius: calc(var(--carta) * 0.08);
+  background-size: cover;
+  background-position: center;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  box-shadow: 0 0 10px rgba(255, 60, 60, 0.35);
+}
+
+/* Verso: colagem de personagens */
+.carta__verso {
+  background-color: #2a1a3a;
+  background-image:
+    url("../assets/img/verso-carta.jpg"),
+    linear-gradient(135deg, #f5b400 0%, #c1272d 50%, #1d3b8b 100%);
+}
+
+/* Frente: imagem definida pelo JS via --imagem */
+.carta__frente {
+  background-color: #fff;
+  background-image: var(--imagem, none);
+  transform: rotateY(180deg);
+}
+
+.carta:not(.carta--virada):hover .carta__interno {
+  transform: translateY(-4px);
+}
+
+.carta:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  border-radius: calc(var(--carta) * 0.08);
+}
+
+.carta--virada .carta__interno {
+  transform: rotateY(180deg);
+}
+
+/* Carta que sumiu do jogo (o espaço no grid é mantido) */
+.carta--removida {
+  opacity: 0;
+  transform: scale(0.6);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s linear 0.4s;
+}
+
+/* ---------- Menu de pausa (popover nativo) ---------- */
+/* O display só é definido quando aberto; fechado, o navegador esconde. */
+.menu-pausa {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  width: min(90vw, max(16rem, calc(var(--fonte-ui) * 12)));
+  padding: 1.2em 1em;
+  font-size: var(--fonte-ui);
+  color: inherit;
+  border: 0;
+}
+
+.menu-pausa:popover-open {
+  display: flex;
+}
+
+.menu-pausa::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.menu-pausa__titulo {
+  margin: 0 0 0.25em;
+  font-size: 1.2em;
+  font-weight: 800;
+}
+
+.menu-pausa .botao {
+  width: 100%;
+  font-size: 0.85em;
+}
+
+/* Navegadores sem popover: mantém o menu escondido em vez de aberto */
+@supports not selector(:popover-open) {
+  .menu-pausa {
+    display: none;
+  }
+}
+
+/* ---------- PASSO 8: destaque do jogador da vez ---------- */
+.placar__jogador--vez {
+  position: relative;
+}
+
+.placar__jogador--vez::after {
+  content: "";
+  position: absolute;
+  inset: -0.2em -0.5em;
+  z-index: -1;
+  border-radius: 0.4em;
+  background: currentColor;
+  opacity: 0.18;
+}
+
+/* ---------- Tela de fim de jogo (popover nativo, igual ao menu de pausa) ----------
+   O JS liga UMA das classes --vitoria/--derrota no #painel-fim,
+   só para colorir o título de forma diferente nas duas telas. */
+.painel-fim {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  width: min(90vw, max(18rem, calc(var(--fonte-ui) * 13)));
+  padding: 1.4em 1.2em;
+  font-size: var(--fonte-ui);
+  color: inherit;
+  text-align: center;
+  border: 0;
+}
+
+.painel-fim:popover-open {
+  display: flex;
+}
+
+.painel-fim::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.painel-fim__titulo {
+  margin: 0;
+  font-size: 1.4em;
+  font-weight: 900;
+}
+
+.painel-fim--vitoria .painel-fim__titulo { color: var(--cor-verde); }
+.painel-fim--derrota .painel-fim__titulo { color: var(--cor-vermelho); }
+
+.painel-fim__resultado {
+  margin: 0;
+  font-weight: 500;
+}
+
+.painel-fim__recorde {
+  margin: 0;
+  color: var(--cor-verde);
+  font-weight: 800;
+}
+
+.painel-fim .botao {
+  width: 100%;
+  font-size: 0.85em;
+}
+
+@supports not selector(:popover-open) {
+  .painel-fim {
+    display: none;
+  }
+}
+
+/* ---------- PASSO 14: animação ao acertar um par ---------- */
+/* ATENÇÃO: a carta acertada está virada (rotateY 180°). Como a animação
+   SUBSTITUI o transform do elemento, todo keyframe precisa repetir o
+   rotateY(180deg); senão a carta desvira (mostra o verso) durante o pulso. */
+@keyframes carta-acerto-pulso {
+  0%   { transform: rotateY(180deg) scale(1); }
+  40%  { transform: rotateY(180deg) scale(1.08); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+
+.carta--acertou .carta__interno {
+  animation: carta-acerto-pulso 0.35s ease;
+}
+
+/* ---------- PASSO 8/12: destaque visual ---------- */
+
+/* Jogador da vez (modo 2 jogadores): o JS liga/desliga esta classe. */
+.placar__jogador--vez {
+  position: relative;
+}
+
+.placar__jogador--vez::after {
+  content: "";
+  position: absolute;
+  inset: -0.2em -0.5em;
+  z-index: -1;
+  border-radius: 0.4em;
+  background: currentColor;
+  opacity: 0.18;
+}
+
+/* ---------- Tela de fim de jogo (popover nativo, igual ao menu de pausa) ---------- */
+.painel-fim {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  width: min(90vw, max(18rem, calc(var(--fonte-ui) * 13)));
+  padding: 1.4em 1.2em;
+  font-size: var(--fonte-ui);
+  color: inherit;
+  text-align: center;
+  border: 0;
+}
+
+.painel-fim:popover-open {
+  display: flex;
+}
+
+.painel-fim::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.painel-fim__titulo {
+  margin: 0;
+  font-size: 1.4em;
+  font-weight: 900;
+}
+
+.painel-fim__resultado {
+  margin: 0;
+  font-weight: 500;
+}
+
+.painel-fim__recorde {
+  margin: 0;
+  color: var(--cor-verde, #2e9c4d);
+  font-weight: 800;
+}
+
+.painel-fim .botao {
+  width: 100%;
+  font-size: 0.85em;
+}
+
+@supports not selector(:popover-open) {
+  .painel-fim {
+    display: none;
+  }
+}
+
+
+/* ---------- Animação: virar a carta ---------- */
+/* A carta dá um pulinho (sobe e cresce) enquanto gira. */
+@keyframes carta-vira {
+  0%   { transform: translateY(0) scale(1); }
+  40%  { transform: translateY(-10%) scale(1.15); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.carta--virada {
+  animation: carta-vira 0.5s ease;
+}
+
+/* ---------- Animação: embaralhar as cartas ---------- */
+/* As cartas vão ao centro da mesa (--dx/--dy, definidos pelo JS),
+   balançam e voltam ao lugar. Duração total: 1.4s (+ atraso por carta). */
+@keyframes carta-embaralhar {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+  30%  { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.75); }
+  40%  { transform: translate(calc(var(--dx) + 14px), var(--dy)) rotate(calc(var(--rot) * -1)) scale(0.75); }
+  50%  { transform: translate(calc(var(--dx) - 14px), var(--dy)) rotate(var(--rot)) scale(0.75); }
+  60%  { transform: translate(calc(var(--dx) + 14px), var(--dy)) rotate(calc(var(--rot) * -1)) scale(0.75); }
+  70%  { transform: translate(var(--dx), var(--dy)) rotate(0deg) scale(0.75); }
+  100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+
+.carta--embaralhando {
+  animation: carta-embaralhar 1.4s ease-in-out both;
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-animacao-forcada]) .carta--virada,
+  html:not([data-animacao-forcada]) .carta--embaralhando {
+    animation: none;
+  }
+}
+
+/* ==========================================================
+   RESPONSIVO — CELULAR
+   ========================================================== */
+
+/* Textos curtos do placar (só aparecem no celular) */
+.placar__unidade-curta {
+  display: none;
+}
+
+/* A faixa "Vez do Jogador" (criada pelo JS) não pode tomar espaço à toa */
+.tela--jogo #aviso-de-vez {
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+
+/* Tela em pé: o tempo continua do lado (direita) do placar */
+@media (orientation: portrait) {
+  .topo {
+    grid-template-columns: var(--largura-pausa) 1fr;
+    gap: 0.5rem;
+  }
+
+  .placar {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 0.5em;
+    width: 100%;
+    padding: 0.3em 0.6em;
+    font-size: calc(var(--fonte-ui) * 0.8);
+  }
+
+  .placar__jogadores {
+    gap: 0.6em;
+  }
+
+  .placar__tempo {
+    text-align: right;
+  }
+}
+
+/* Celular em pé (telas estreitas): textos mais curtos para tudo caber */
+@media (max-width: 560px) {
+  .tela--jogo {
+    gap: 0.5rem;
+    padding: 0.6rem;
+  }
+
+  .topo {
+    --largura-pausa: 2.6rem;
+  }
+
+  .placar {
+    font-size: calc(var(--fonte-ui) * 0.75);
+  }
+
+  /* "Erros restantes" vira "Erros" (continua lido por leitores de tela) */
+  .placar__extra {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .placar__erros {
+    font-size: 0.75em;
+  }
+
+  /* "Segundos" vira "s" */
+  .placar__unidade-longa {
+    display: none;
+  }
+
+  .placar__unidade-curta {
+    display: inline;
+  }
+
+  .tela--jogo #aviso-de-vez {
+    padding: 0.3rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+/* Celular deitado (pouca altura): tudo mais compacto para sobrar espaço às cartas */
+@media (orientation: landscape) and (max-height: 500px) {
+  .tela--jogo {
+    gap: 0.35rem;
+    padding: 0.5rem clamp(0.75rem, 3vw, 2rem);
+  }
+
+  .topo {
+    --largura-pausa: 2.4rem;
+  }
+
+  .placar {
+    padding: 0.15em 0.8em;
+    font-size: calc(var(--fonte-ui) * 0.8);
+  }
+
+  .tela--jogo #aviso-de-vez {
+    padding: 0.15rem 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .menu-pausa,
+  .painel-fim {
+    padding-block: 0.8em;
+    gap: 0.4em;
+  }
+}
+
+/* Menus (pausa e fim de jogo) nunca passam da tela, mesmo deitado */
+.menu-pausa,
+.painel-fim {
+  max-height: 94dvh;
+  overflow-y: auto;
+}
+
+/* Tela de toque: sem "hover" preso depois de tocar numa carta */
+@media (hover: none) {
+  .carta:not(.carta--virada):hover .carta__interno {
+    transform: none;
+  }
+}
+
+/* Resultado do fim de jogo: respeita a quebra de linha (um jogador por linha) */
+.painel-fim__resultado {
+  white-space: pre-line;
+}

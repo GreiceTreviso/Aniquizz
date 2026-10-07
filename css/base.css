@@ -200,9 +200,9 @@ button {
 .botao--texto-claro { --cor-texto-botao: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  html:not([data-animacao-forcada]) *,
+  html:not([data-animacao-forcada]) *::before,
+  html:not([data-animacao-forcada]) *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }

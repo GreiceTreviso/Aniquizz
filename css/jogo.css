@@ -324,10 +324,13 @@
 }
 
 /* ---------- PASSO 14: animação ao acertar um par ---------- */
+/* ATENÇÃO: a carta acertada está virada (rotateY 180°). Como a animação
+   SUBSTITUI o transform do elemento, todo keyframe precisa repetir o
+   rotateY(180deg); senão a carta desvira (mostra o verso) durante o pulso. */
 @keyframes carta-acerto-pulso {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.08); }
-  100% { transform: scale(1); }
+  0%   { transform: rotateY(180deg) scale(1); }
+  40%  { transform: rotateY(180deg) scale(1.08); }
+  100% { transform: rotateY(180deg) scale(1); }
 }
 
 .carta--acertou .carta__interno {
@@ -402,16 +405,6 @@
   }
 }
 
-/* ---------- PASSO 14: animação ao acertar um par ---------- */
-@keyframes carta-acerto-pulso {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
-
-.carta--acertou .carta__interno {
-  animation: carta-acerto-pulso 0.35s ease;
-}
 
 /* ---------- Animação: virar a carta ---------- */
 /* A carta dá um pulinho (sobe e cresce) enquanto gira. */
@@ -445,8 +438,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .carta--virada,
-  .carta--embaralhando {
+  html:not([data-animacao-forcada]) .carta--virada,
+  html:not([data-animacao-forcada]) .carta--embaralhando {
     animation: none;
   }
 }

@@ -70,7 +70,8 @@ function montarTabuleiro() {
    centro) e --rot (giro); o movimento em si está no jogo.css.
    Quando termina, chama aoTerminar (a prévia das cartas). */
 function embaralharComAnimacao(aoTerminar) {
-  const reduzirMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduzirMovimento =
+    RESPEITAR_REDUZIR_MOVIMENTO && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduzirMovimento) {
     aoTerminar();
     return;
