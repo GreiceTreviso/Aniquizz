@@ -5,8 +5,9 @@
   height: 100vh;
   height: 100dvh; /* a tela nunca passa da janela: o tabuleiro se encaixa */
   padding: clamp(0.75rem, 3vh, 2.5rem) clamp(0.75rem, 3vw, 3rem);
+  /* --fundo-jogo é definido pelo js/jogo.js (um fundo sorteado a cada partida) */
   background-image:
-    url("../assets/img/fundo-jogo.jpg"),
+    var(--fundo-jogo, none),
     radial-gradient(circle at 50% 20%, #7a1c24 0%, #3b0d18 45%, #12040a 100%);
 }
 

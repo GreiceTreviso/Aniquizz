@@ -1,4 +1,22 @@
+/* ---------- Fundo sorteado a cada partida ---------- */
+const fundosDoJogo = [
+  "assets/img/fundo-jogo-1.jpg",
+  "assets/img/fundo-jogo-2.jpg",
+  "assets/img/fundo-jogo-3.jpg",
+  "assets/img/fundo-jogo-4.jpg",
+  "assets/img/fundo-jogo-5.jpg",
+];
+
+function sortearFundo() {
+  const fundo = fundosDoJogo[Math.floor(Math.random() * fundosDoJogo.length)];
+  // Endereço completo: uma url() dentro de variável CSS é resolvida a partir da pasta css/,
+  // então o caminho relativo ao jogo.html não funcionaria.
+  const endereco = new URL(fundo, document.baseURI).href;
+  document.querySelector(".tela--jogo").style.setProperty("--fundo-jogo", `url("${endereco}")`);
+}
+
 function iniciarJogo() {
+  sortearFundo();
   jogoTerminado = false;
   jogoPausado = false;
   primeiraCarta = null;
