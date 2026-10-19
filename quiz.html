@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz — Anime Flip & Match</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,800;0,900;1,900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+
+  <main class="tela tela--animes tela--quiz">
+    <a class="logo" href="index.html" aria-label="Anime — voltar ao início">Anime Flip & Match</a>
+    <h1 class="sr-only">Quiz: igualdade de gênero em animes</h1>
+
+    <section class="painel quiz" aria-label="Quiz">
+      <!-- Pergunta -->
+      <div id="quiz-pergunta-area">
+        <p class="quiz__progresso" id="progresso" aria-live="polite"></p>
+        <p class="quiz__pergunta" id="pergunta"></p>
+
+        <div class="quiz__respostas">
+          <button class="botao botao--verde" type="button" data-resposta="true">True</button>
+          <button class="botao botao--vermelho botao--texto-claro" type="button" data-resposta="false">False</button>
+        </div>
+
+        <p class="quiz__feedback" id="feedback" aria-live="polite" hidden></p>
+        <button class="botao botao--lilas quiz__proxima" id="btn-proxima" type="button" hidden>Next</button>
+      </div>
+
+      <!-- Resultado final -->
+      <div id="quiz-resultado-area" hidden>
+        <p class="quiz__pergunta" id="resultado"></p>
+        <a class="botao botao--verde" href="jogadores.html">Continue</a>
+      </div>
+    </section>
+
+    <a class="quiz__pular" href="jogadores.html">Skip quiz</a>
+  </main>
+
+  <script src="js/quiz.js" defer></script>
+</body>
+</html>
