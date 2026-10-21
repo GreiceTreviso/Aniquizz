@@ -27,33 +27,33 @@ function mostrarPlacarFinalDeDoisJogadores() {
   const [jogador1, jogador2] = placar;
 
   if (jogador1.pontos === jogador2.pontos) {
-    painelFimTitulo.textContent = "🤝 It's a Tie!";
+    painelFimTitulo.textContent = "🤝 Empate!";
   } else {
     const vencedor = jogador1.pontos > jogador2.pontos ? 1 : 2;
-    painelFimTitulo.textContent = `🏆 Player ${vencedor} wins!`;
+    painelFimTitulo.textContent = `🏆 Jogador ${vencedor} venceu!`;
   }
 
   painelFimResultado.textContent =
-    `Player 1: ${jogador1.pontos} pairs\nPlayer 2: ${jogador2.pontos} pairs`;
+    `Jogador 1: ${jogador1.pontos} pares\nJogador 2: ${jogador2.pontos} pares`;
 
   painelFimRecorde.hidden = true; // recorde só vale no modo 1 jogador
 }
 
 function mostrarTelaDeVitoria() {
   definirTemaDoPainel("vitoria");
-  painelFimTitulo.textContent = "🏆 Victory!";
-  painelFimResultado.textContent = `You found all ${placar[0].pontos} pairs!`;
+  painelFimTitulo.textContent = "🏆 Vitória!";
+  painelFimResultado.textContent = `Você encontrou todos os ${placar[0].pontos} pares!`;
 
   painelFimRecorde.hidden = !verificarRecorde(tempos[0]);
 }
 
 function mostrarTelaDeDerrota(motivo) {
   definirTemaDoPainel("derrota");
-  painelFimTitulo.textContent = "💀 You lost";
+  painelFimTitulo.textContent = "💀 Você perdeu";
 
   painelFimResultado.textContent = motivo === "tempo"
-    ? "The time is up. Game over."
-    : "You ran out of moves. Game over.";
+    ? "O tempo acabou. Fim de jogo."
+    : "Suas jogadas acabaram. Fim de jogo.";
 
   painelFimRecorde.hidden = true;
 }
